@@ -1,0 +1,13 @@
+.gradient-custom {
+  background: #e5e2e7;
+  background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+  background: linear-gradient(to right, rgb(134, 132, 132), rgb(64, 64, 65))
+}
+
+a {
+  cursor: pointer;
+}
+
+.cursor-invalid {
+  cursor: no-drop !important;
+}

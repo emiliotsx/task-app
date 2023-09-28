@@ -1,0 +1,44 @@
+<section class="vh-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card bg-dark text-white" style="border-radius: 1rem;">
+          <div class="card-body p-3 text-center">
+            <form [formGroup]="form" (submit)="signIn()" class="mb-md-5 mt-md-4 pb-5">
+              <h2 class="fw-bold mb-2 text-uppercase">Sign Up</h2>
+              <p class="text-white-50">Sign up with:</p>
+              <a>
+                <app-google></app-google>
+              </a>
+              <p class="text-white-50 mt-3 mb-3">or:</p>
+              <div class="form-outline form-white mb-4">
+                <label class="form-label w-100 text-start" for="typeEmailX">Name</label>
+                <input type="text" formControlName="name" class="form-control form-control-lg" />
+              </div>
+              <div class="form-outline form-white mb-4">
+                <label class="form-label w-100 text-start" for="typeEmailX">Email</label>
+                <input type="email" formControlName="email" class="form-control form-control-lg" />
+              </div>
+              <div class="form-outline form-white mb-4">
+                <label class="form-label w-100 text-start" for="typeEmailX">Password</label>
+                <input type="password" formControlName="password" class="form-control form-control-lg" />
+              </div>
+              <div class="form-outline form-white mb-4">
+                <label class="form-label w-100 text-start" for="typeEmailX">Confirm Password</label>
+                <input type="password" formControlName="confirmPassword" class="form-control form-control-lg" />
+              </div>
+              <div [ngClass]="{'cursor-invalid': !isValidForma}">
+                <button class="btn btn-outline-light btn-lg px-5" type="submit" [disabled]="!isValidForma">Sign
+                  In</button>
+              </div>
+            </form>
+            <div>
+              <p class="mb-0">Return to? <a href="/sign-in" class="text-white-50 fw-bold">Sign In</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

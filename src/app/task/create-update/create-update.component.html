@@ -1,0 +1,33 @@
+<form [formGroup]="form" (submit)="create()" class="row container">
+  <div class="row">
+    <div class="col">
+      <label class="form-label w-100 text-start">Description</label>
+      <input type="text" formControlName="description" class="form-control">
+    </div>
+    <div class="col">
+      <label class="form-label w-100 text-start">Details</label>
+      <input type="text" formControlName="details" class="form-control">
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col">
+      <label class="form-label w-100 text-start">Date</label>
+      <input type="date" formControlName="date" class="form-control">
+    </div>
+    <div class="col">
+      <label class="form-label w-100 text-start">Categories</label>
+      <select class="form-select" formControlName="category">
+        <option *ngFor="let category of categories" [value]="category.id">
+          {{ category.description}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="d-flex justify-content-end mt-4" [ngClass]="{'cursor-invalid': !isValidForma}">
+      <button type="submit" class="btn btn-success" [disabled]="!isValidForma">
+        {{ !id ? 'Create' : 'Update' }}
+      </button>
+    </div>
+  </div>
+</form>
