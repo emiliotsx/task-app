@@ -13,6 +13,8 @@ import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 
+import { ScriptLoaderService } from './services/script-loader.service'
+
 
 @NgModule({
   declarations: [
@@ -30,7 +32,7 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
     TaskModule,
     CategoryModule
   ],
-  providers: [],
+  providers: [ScriptLoaderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
