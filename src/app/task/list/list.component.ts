@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { STATUS, PATH_NAMES } from '../../constants'
 import { getTasksInStorage, updateTasksInStorage, deleteTasksInStorage } from '../../utils'
-import { ScriptLoaderService } from '../../services/script-loader.service'
 
 
 @Component({
@@ -15,22 +14,10 @@ export class ListComponent implements OnInit {
 
   private _tasks: Task[] = []
 
-  constructor(
-    private _router: Router,
-    private _scriptLoaderService: ScriptLoaderService
-  ) {
-
-  }
+  constructor(private _router: Router) { }
 
   ngOnInit(): void {
-    // this._tasks = getTasksInStorage()
-    // this._scriptLoaderService.loadScript('/services/google.calendar.service.js').then((response) => {
-    //   // El script se ha cargado con éxito
-    //   // Puedes ejecutar código relacionado con el script aquí
-    //   console.log('response', response)
-    // }).catch((error) => {
-    //   console.error('Error al cargar el script:', error);
-    // });
+    this._tasks = getTasksInStorage()
   }
 
   handleChangeStatus(task: Task) {
@@ -52,24 +39,44 @@ export class ListComponent implements OnInit {
     this._router.navigate([PATH_NAMES.TASKS_UPDATE, task.id])
   }
 
-  handleCreateEvent(task: Task) {
-    // console.log('-- handleCreateEvent --', task);
+  async handleCreateEvent(task: Task) {
     const eventDetails = {
       summary: task.description,
       description: task.details,
       start: {
-        dateTime: task.date,
+        dateTime: task.dateStart,
       },
       end: {
-        dateTime: "2023-10-31T00:00:00.000Z",
+        dateTime: task.dateEnd,
       },
     };
 
-    // this._googleCalendarService
-    //   .createEvent(eventDetails)
-    //   .then((response: any) => console.log('Evento creado:', response.result.htmlLink))
-    //   .catch(error => console.log('== ERROR ==', error));
+    try {
+      const response = await fetch('http://127.0.0.1:3000/event', {
+        method: 'POST',
+        body: JSON.stringify(eventDetails),
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Access-Control-Allow-Origin': '*',
+        }
+      });
 
+      const res = await response.json();
+      if (res?.data?.data?.htmlLink) {
+        task.htmlLink = res.data.data.htmlLink
+        updateTasksInStorage(task)
+        alert('EVENTO CALENDARIZADO CON EXITO')
+      }
+
+    } catch (error) {
+      console.log('catch', error)
+      alert('ERROR AL CALENDARIZAR EVENTO')
+    }
+
+  }
+
+  handleShowEvent(task: Task) {
+    window.open(task.htmlLink)
   }
 
   get tasks() {

@@ -21,7 +21,8 @@ export class CreateUpdateComponent implements OnInit {
     id: new FormControl(0),
     description: new FormControl('', Validators.required),
     details: new FormControl(''),
-    date: new FormControl('', Validators.required),
+    dateStart: new FormControl('', Validators.required),
+    dateEnd: new FormControl('', Validators.required),
     status: new FormControl(''),
     category: new FormControl('', Validators.required)
   })
@@ -50,7 +51,8 @@ export class CreateUpdateComponent implements OnInit {
         id: task.id,
         description: task.description,
         details: task.details,
-        date: formatInputDate(task.date as any),
+        dateStart: formatInputDate(task.dateStart as any),
+        dateEnd: formatInputDate(task.dateEnd as any),
         status: `${task.status}`,
         category: `${task.category}`
       })
@@ -58,12 +60,13 @@ export class CreateUpdateComponent implements OnInit {
   }
 
   async create() {
-    const { description, details, date, category } = this.form.value
+    const { description, details, dateStart, dateEnd, category } = this.form.value
     const task: Task = {
       id: this.id || 0,
       description: description!,
       details: details!,
-      date: new Date(date!),
+      dateStart: new Date(dateStart!),
+      dateEnd: new Date(dateEnd!),
       category: +category!,
       status: STATUS.PENDING,
     }

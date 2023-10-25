@@ -10,7 +10,6 @@ import { CheckIconComponent } from '../assets/check-icon/check-icon.component';
 import { TodoListComponent } from '../assets/todo-list/todo-list.component';
 import { ListComponent } from './list/list.component';
 import { CreateUpdateComponent } from './create-update/create-update.component';
-import { NodeCommunicationComponent } from '../services/node-comunication.component';
 
 const components = [
   CirclePlusIconComponent,
@@ -32,8 +31,7 @@ const routes: Routes = [
   {
     path: `${PATH_NAMES.TASKS_UPDATE}/:id`,
     component: CreateUpdateComponent
-  },
-  { path: 'node-communication', component: NodeCommunicationComponent }
+  }
 ];
 
 @NgModule({

@@ -19,7 +19,8 @@
         <div class="justify-content-end">
           <button type="button" class="btn btn-danger ms-4" (click)="handleDelete(task)">🗑</button>
           <button type="button" class="btn btn-info ms-2" (click)="handleUpdate(task)">✏</button>
-          <button type="button" class="btn btn-primary ms-2" (click)="handleCreateEvent(task)">🗓</button>
+          <button *ngIf="!task.htmlLink" type="button" class="btn btn-primary ms-2" (click)="handleCreateEvent(task)">🗓</button>
+          <button *ngIf="task.htmlLink" type="button" class="btn btn-success ms-2" (click)="handleShowEvent(task)">🗓</button>
         </div>
       </li>
     </ul>
