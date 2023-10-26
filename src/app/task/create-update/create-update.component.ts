@@ -7,7 +7,8 @@ import {
   getTasksInStorage, createTasksInStorage, updateTasksInStorage,
   formatInputDate, getCategoriesInStorage
 } from '../../utils'
-import { CategoriesService } from '../../category/services/categories.service';
+import { CategoriesService } from '../../services/categories.service';
+import { TasksService } from '../../services/tasks.service';
 
 
 @Component({
@@ -32,7 +33,8 @@ export class CreateUpdateComponent implements OnInit {
   constructor(
     private _router: Router,
     private _activeRoute: ActivatedRoute,
-    private _categoriesService: CategoriesService
+    private _categoriesService: CategoriesService,
+    private _tasksService: TasksService
   ) { }
 
   ngOnInit(): void {
@@ -40,30 +42,29 @@ export class CreateUpdateComponent implements OnInit {
       .getCategories()
       .subscribe((categories) => {
         this._categories = categories;
-        this.fillTask()
       });
+
+    const id = this._activeRoute.snapshot.paramMap.get('id')
+    if (!!id) {
+      this._tasksService
+        .getTaskById(+id)
+        .subscribe((task) => this.fillTask(task));
+    }
   }
 
-  fillTask() {
-    const id = this._activeRoute.snapshot.paramMap.get('id')
+  fillTask(task: Task) {
+    if (!task) return
 
-    if (!id) return
-
-    this._id = +id
-    const tasks = getTasksInStorage();
-    const task = tasks.find((task: Task) => task.id === +id)
-
-    if (task) {
-      this._form.patchValue({
-        id: task.id,
-        description: task.description,
-        details: task.details,
-        dateStart: formatInputDate(task.dateStart as any),
-        dateEnd: formatInputDate(task.dateEnd as any),
-        status: `${task.status}`,
-        category: `${task.category}`
-      })
-    }
+    this._id = task.id
+    this._form.patchValue({
+      id: task.id,
+      description: task.description,
+      details: task.details,
+      dateStart: formatInputDate(task.dateStart as any),
+      dateEnd: formatInputDate(task.dateEnd as any),
+      status: `${task.status}`,
+      category: `${task.category}`
+    })
   }
 
   async create() {
@@ -78,11 +79,23 @@ export class CreateUpdateComponent implements OnInit {
       status: STATUS.PENDING,
     }
 
-    !this.id
-      ? createTasksInStorage(task)
-      : updateTasksInStorage(task)
+    if (!this.id) {
+      this._tasksService
+        .insertTask(task)
+        .subscribe(() => this.redirectPage())
+    } else {
+      this._tasksService
+        .updateTask(task)
+        .subscribe(() => this.redirectPage())
+    }
 
+  }
+
+  redirectPage() {
     this._router.navigate([PATH_NAMES.TASKS])
+      .then(() => {
+        window.location.reload()
+      })
   }
 
   get form() {

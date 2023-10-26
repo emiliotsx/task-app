@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { STATUS, PATH_NAMES } from '../../constants'
 import { getTasksInStorage, updateTasksInStorage, deleteTasksInStorage } from '../../utils'
-import { TasksService } from '../services/tasks.service';
+import { TasksService } from '../../services/tasks.service';
 
 
 @Component({
@@ -22,7 +22,7 @@ export class ListComponent implements OnInit {
 
   ngOnInit(): void {
     this._tasksService
-      .getTask()
+      .getTasks()
       .subscribe((tasks) => this._tasks = tasks);
   }
 

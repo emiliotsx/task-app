@@ -1,9 +1,9 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { PATH_NAMES, PATH_NAMES_WHITOUT_LAYOUT, PATH_NAMES_WHITOUT_SIDEBARD } from '../../constants'
 import { getCategoriesInStorage, deleteCategoriesInStorage } from '../../utils';
-import { CategoriesService } from '../../category/services/categories.service'
+import { CategoriesService } from '../../services/categories.service'
 
 @Component({
   selector: 'app-sidebar',
@@ -34,10 +34,13 @@ export class SidebarComponent implements OnInit, DoCheck {
   }
 
   handleDelete(category: Category) {
-    deleteCategoriesInStorage(category)
     this._categoriesService
-      .getCategories()
-      .subscribe((categories) => this._categories = categories);
+      .deleteCategory(category.id)
+      .subscribe(() => {
+        this._categoriesService
+          .getCategories()
+          .subscribe((categories) => this._categories = categories);
+      })
   }
 
   handleUpdate(category: Category) {

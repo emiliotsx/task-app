@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { PATH_NAMES } from '../../constants'
 import { getCategoriesInStorage, createCategoriesInStorage, updateCategoriesInStorage } from '../../utils'
-import { CategoriesService } from '../../category/services/categories.service';
+import { CategoriesService } from '../../services/categories.service';
 
 
 @Component({
@@ -14,7 +14,6 @@ import { CategoriesService } from '../../category/services/categories.service';
 })
 export class CreateUpdateComponent implements OnInit {
 
-  private _categories: Category[] = []
   private _id!: number
   private _form = new FormGroup({
     id: new FormControl(0),
@@ -28,29 +27,22 @@ export class CreateUpdateComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this._categoriesService
-      .getCategories()
-      .subscribe((categories) => {
-        this._categories = categories;
-        this.fillCategory()
-      });
+    const id = this._activeRoute.snapshot.paramMap.get('id')
+    if (!!id) {
+      this._categoriesService
+        .getCategoryById(+id)
+        .subscribe((category) => this.fillCategory(category));
+    }
   }
 
-  fillCategory() {
-    const id = this._activeRoute.snapshot.paramMap.get('id')
+  fillCategory(category: Category) {
+    if (!category) return
 
-    if (!id) return
-
-    this._id = +id
-    console.log('this.categories', this.categories)
-    const category = this.categories.find((category: Category) => category.id === +id)
-
-    if (category) {
-      this._form.patchValue({
-        id: category.id,
-        description: category.description,
-      })
-    }
+    this._id = category.id
+    this._form.patchValue({
+      id: category.id,
+      description: category.description,
+    })
   }
 
   async create() {
@@ -60,11 +52,22 @@ export class CreateUpdateComponent implements OnInit {
       description: description!
     }
 
-    !this.id
-      ? createCategoriesInStorage(category)
-      : updateCategoriesInStorage(category)
+    if (!this.id) {
+      this._categoriesService
+        .insertCategory(category)
+        .subscribe(() => this.redirectPage())
+    } else {
+      this._categoriesService
+        .updateCategory(category)
+        .subscribe(() => this.redirectPage())
+    }
+  }
 
+  redirectPage() {
     this._router.navigate([PATH_NAMES.TASKS])
+      .then(() => {
+        window.location.reload()
+      })
   }
 
   get form() {
@@ -85,14 +88,6 @@ export class CreateUpdateComponent implements OnInit {
 
   get isValidForma() {
     return this.form.valid
-  }
-
-  get categories(): Category[] {
-    return this._categories
-  }
-
-  set categories(value: Category[]) {
-    this._categories = value
   }
 
 }

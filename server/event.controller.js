@@ -97,10 +97,8 @@ const init = async (req, res) => {
 
 const createEvent = async (req, res) => {
   const eventData = req.body;
-  console.log('create', eventData)
   try {
     const auth = await authorize();
-    console.log('createEvent', auth)
     const response = await create(auth, eventData);
     res.json({ data: response })
   } catch (error) {
