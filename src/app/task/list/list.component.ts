@@ -32,13 +32,23 @@ export class ListComponent implements OnInit {
       : STATUS.PENDING
 
     task.status = newStatus
-    updateTasksInStorage(task)
-    this._tasks = getTasksInStorage()
+    this._tasksService
+      .updateTask(task)
+      .subscribe(() => {
+        this._tasksService
+          .getTasks()
+          .subscribe((tasks) => this._tasks = tasks)
+      })
   }
 
   handleDelete(task: Task) {
-    deleteTasksInStorage(task)
-    this._tasks = getTasksInStorage()
+    this._tasksService
+      .deleteTask(task.id)
+      .subscribe(() => {
+        this._tasksService
+          .getTasks()
+          .subscribe((tasks) => this._tasks = tasks)
+      })
   }
 
   handleUpdate(task: Task) {
@@ -70,7 +80,9 @@ export class ListComponent implements OnInit {
       const res = await response.json();
       if (res?.data?.data?.htmlLink) {
         task.htmlLink = res.data.data.htmlLink
-        updateTasksInStorage(task)
+        this._tasksService
+          .updateTask(task)
+          .subscribe()
         alert('EVENTO CALENDARIZADO CON EXITO')
       }
 
