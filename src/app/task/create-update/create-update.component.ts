@@ -7,6 +7,8 @@ import {
   getTasksInStorage, createTasksInStorage, updateTasksInStorage,
   formatInputDate, getCategoriesInStorage
 } from '../../utils'
+import { CategoriesService } from '../../category/services/categories.service';
+
 
 @Component({
   selector: 'app-create-update',
@@ -29,12 +31,17 @@ export class CreateUpdateComponent implements OnInit {
 
   constructor(
     private _router: Router,
-    private _activeRoute: ActivatedRoute
+    private _activeRoute: ActivatedRoute,
+    private _categoriesService: CategoriesService
   ) { }
 
   ngOnInit(): void {
-    this._categories = getCategoriesInStorage()
-    this.fillTask()
+    this._categoriesService
+      .getCategories()
+      .subscribe((categories) => {
+        this._categories = categories;
+        this.fillTask()
+      });
   }
 
   fillTask() {

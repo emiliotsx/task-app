@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { PATH_NAMES } from '../../constants'
 import { getCategoriesInStorage, createCategoriesInStorage, updateCategoriesInStorage } from '../../utils'
+import { CategoriesService } from '../../category/services/categories.service';
 
 
 @Component({
@@ -13,6 +14,7 @@ import { getCategoriesInStorage, createCategoriesInStorage, updateCategoriesInSt
 })
 export class CreateUpdateComponent implements OnInit {
 
+  private _categories: Category[] = []
   private _id!: number
   private _form = new FormGroup({
     id: new FormControl(0),
@@ -21,11 +23,17 @@ export class CreateUpdateComponent implements OnInit {
 
   constructor(
     private _router: Router,
-    private _activeRoute: ActivatedRoute
+    private _activeRoute: ActivatedRoute,
+    private _categoriesService: CategoriesService
   ) { }
 
   ngOnInit(): void {
-    this.fillCategory()
+    this._categoriesService
+      .getCategories()
+      .subscribe((categories) => {
+        this._categories = categories;
+        this.fillCategory()
+      });
   }
 
   fillCategory() {
@@ -34,8 +42,8 @@ export class CreateUpdateComponent implements OnInit {
     if (!id) return
 
     this._id = +id
-    const categories = getCategoriesInStorage();
-    const category = categories.find((category: Category) => category.id === +id)
+    console.log('this.categories', this.categories)
+    const category = this.categories.find((category: Category) => category.id === +id)
 
     if (category) {
       this._form.patchValue({
@@ -77,6 +85,14 @@ export class CreateUpdateComponent implements OnInit {
 
   get isValidForma() {
     return this.form.valid
+  }
+
+  get categories(): Category[] {
+    return this._categories
+  }
+
+  set categories(value: Category[]) {
+    this._categories = value
   }
 
 }

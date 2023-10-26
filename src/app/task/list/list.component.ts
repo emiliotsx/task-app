@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { STATUS, PATH_NAMES } from '../../constants'
 import { getTasksInStorage, updateTasksInStorage, deleteTasksInStorage } from '../../utils'
+import { TasksService } from '../services/tasks.service';
 
 
 @Component({
@@ -14,10 +15,15 @@ export class ListComponent implements OnInit {
 
   private _tasks: Task[] = []
 
-  constructor(private _router: Router) { }
+  constructor(
+    private _router: Router,
+    private _tasksService: TasksService
+  ) { }
 
   ngOnInit(): void {
-    this._tasks = getTasksInStorage()
+    this._tasksService
+      .getTask()
+      .subscribe((tasks) => this._tasks = tasks);
   }
 
   handleChangeStatus(task: Task) {
@@ -52,7 +58,7 @@ export class ListComponent implements OnInit {
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:3000/event', {
+      const response = await fetch('http://127.0.0.1:3001/event', {
         method: 'POST',
         body: JSON.stringify(eventDetails),
         headers: {

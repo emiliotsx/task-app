@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { PATH_NAMES, PATH_NAMES_WHITOUT_LAYOUT, PATH_NAMES_WHITOUT_SIDEBARD } from '../../constants'
 import { getCategoriesInStorage, deleteCategoriesInStorage } from '../../utils';
+import { CategoriesService } from '../../category/services/categories.service'
 
 @Component({
   selector: 'app-sidebar',
@@ -13,19 +14,30 @@ export class SidebarComponent implements OnInit, DoCheck {
 
   private _categories: Category[] = []
 
-  constructor(private _router: Router) { }
+  constructor(
+    private _router: Router,
+    private _categoriesService: CategoriesService
+  ) { }
 
   ngDoCheck(): void {
-    this._categories = getCategoriesInStorage()
+    if (this.categories.length <= 0) {
+      this._categoriesService
+        .getCategories()
+        .subscribe((categories) => this._categories = categories);
+    }
   }
 
   ngOnInit(): void {
-    this._categories = getCategoriesInStorage()
+    this._categoriesService
+      .getCategories()
+      .subscribe((categories) => this._categories = categories);
   }
 
   handleDelete(category: Category) {
     deleteCategoriesInStorage(category)
-    this._categories = getCategoriesInStorage()
+    this._categoriesService
+      .getCategories()
+      .subscribe((categories) => this._categories = categories);
   }
 
   handleUpdate(category: Category) {
