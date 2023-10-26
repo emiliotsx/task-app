@@ -1,0 +1,79 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "description": "Crear FrontEnd",
+      "details": "Crear FrontEnd",
+      "dateStart": "2023-10-25T00:00:00.000Z",
+      "dateEnd": "2023-10-25T00:00:00.000Z",
+      "category": 5,
+      "status": 0
+    },
+    {
+      "id": 2,
+      "description": "Crear BackEnd",
+      "details": "Crear BackEnd",
+      "dateStart": "2023-10-29T00:00:00.000Z",
+      "dateEnd": "2023-10-29T00:00:00.000Z",
+      "category": 4,
+      "status": 0
+    },
+    {
+      "id": 3,
+      "description": "Crear Base de Datos",
+      "details": "",
+      "category": 4,
+      "status": 0,
+      "dateStart": "2023-10-26T23:47:00.000Z",
+      "dateEnd": "2023-11-10T23:47:00.000Z",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NGluZGt1aGNtaWhqdTFjbzU4ZWwzNnNkMGsgZW1pbGlvZmdvbnphbGV6N0Bt"
+    },
+    {
+      "id": 4,
+      "description": "trabajo",
+      "details": "trabajo",
+      "category": 4,
+      "status": 0,
+      "dateStart": "2023-10-25T21:10:00.000Z",
+      "dateEnd": "2023-10-25T21:10:00.000Z",
+      "htmlLink": "https://www.google.com/calendar/event?eid=b2d1ZWtoaDNkYnVoMjY1NGVxZGNmaDFybGcgZW1pbGlvZmdvbnphbGV6N0Bt"
+    },
+    {
+      "id": 5,
+      "description": "Implementar api google-calendar",
+      "details": "esta es una prueba para agregar la tarea a google calendar",
+      "dateStart": "2023-10-25T23:19:00.000Z",
+      "dateEnd": "2023-10-26T01:00:00.000Z",
+      "category": 4,
+      "status": 0,
+      "htmlLink": "https://www.google.com/calendar/event?eid=OTIyMzhnbWUzcG0yOHJibmVnZjY2NnM4ZGMgZW1pbGlvZmdvbnphbGV6N0Bt"
+    },
+    {
+      "id": 6,
+      "description": "prueba",
+      "details": "prueba",
+      "dateStart": "2023-10-26T02:45:00.000Z",
+      "dateEnd": "2023-10-26T02:45:00.000Z",
+      "category": 6,
+      "status": 0
+    }
+  ],
+  "categories": [
+    {
+      "id": 4,
+      "description": "Universidad"
+    },
+    {
+      "id": 5,
+      "description": "Breiner"
+    },
+    {
+      "id": 6,
+      "description": "asdfasdf"
+    },
+    {
+      "id": 7,
+      "description": "rturtyurtyu"
+    }
+  ]
+}

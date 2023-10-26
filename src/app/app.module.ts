@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { SecurityModule } from './security/security.module';
 import { TaskModule } from './task/task.module';
@@ -28,7 +29,8 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
     ReactiveFormsModule,
     SecurityModule,
     TaskModule,
-    CategoryModule
+    CategoryModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -7,6 +7,9 @@ import {
   getTasksInStorage, createTasksInStorage, updateTasksInStorage,
   formatInputDate, getCategoriesInStorage
 } from '../../utils'
+import { CategoriesService } from '../../services/categories.service';
+import { TasksService } from '../../services/tasks.service';
+
 
 @Component({
   selector: 'app-create-update',
@@ -21,58 +24,78 @@ export class CreateUpdateComponent implements OnInit {
     id: new FormControl(0),
     description: new FormControl('', Validators.required),
     details: new FormControl(''),
-    date: new FormControl('', Validators.required),
+    dateStart: new FormControl('', Validators.required),
+    dateEnd: new FormControl('', Validators.required),
     status: new FormControl(''),
     category: new FormControl('', Validators.required)
   })
 
   constructor(
     private _router: Router,
-    private _activeRoute: ActivatedRoute
+    private _activeRoute: ActivatedRoute,
+    private _categoriesService: CategoriesService,
+    private _tasksService: TasksService
   ) { }
 
   ngOnInit(): void {
-    this._categories = getCategoriesInStorage()
-    this.fillTask()
-  }
+    this._categoriesService
+      .getCategories()
+      .subscribe((categories) => {
+        this._categories = categories;
+      });
 
-  fillTask() {
     const id = this._activeRoute.snapshot.paramMap.get('id')
-
-    if (!id) return
-
-    this._id = +id
-    const tasks = getTasksInStorage();
-    const task = tasks.find((task: Task) => task.id === +id)
-
-    if (task) {
-      this._form.patchValue({
-        id: task.id,
-        description: task.description,
-        details: task.details,
-        date: formatInputDate(task.date as any),
-        status: `${task.status}`,
-        category: `${task.category}`
-      })
+    if (!!id) {
+      this._tasksService
+        .getTaskById(+id)
+        .subscribe((task) => this.fillTask(task));
     }
   }
 
+  fillTask(task: Task) {
+    if (!task) return
+
+    this._id = task.id
+    this._form.patchValue({
+      id: task.id,
+      description: task.description,
+      details: task.details,
+      dateStart: formatInputDate(task.dateStart as any),
+      dateEnd: formatInputDate(task.dateEnd as any),
+      status: `${task.status}`,
+      category: `${task.category}`
+    })
+  }
+
   async create() {
-    const { description, details, date, category } = this.form.value
+    const { description, details, dateStart, dateEnd, category } = this.form.value
     const task: Task = {
       id: this.id || 0,
       description: description!,
       details: details!,
-      date: new Date(date!),
+      dateStart: new Date(dateStart!),
+      dateEnd: new Date(dateEnd!),
       category: +category!,
       status: STATUS.PENDING,
     }
 
-    !this.id
-      ? createTasksInStorage(task)
-      : updateTasksInStorage(task)
+    if (!this.id) {
+      this._tasksService
+        .insertTask(task)
+        .subscribe(() => this.redirectPage())
+    } else {
+      this._tasksService
+        .updateTask(task)
+        .subscribe(() => this.redirectPage())
+    }
 
+  }
+
+  redirectPage() {
     this._router.navigate([PATH_NAMES.TASKS])
+      .then(() => {
+        window.location.reload()
+      })
   }
 
   get form() {

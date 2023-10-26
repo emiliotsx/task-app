@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 
 import { STATUS, PATH_NAMES } from '../../constants'
 import { getTasksInStorage, updateTasksInStorage, deleteTasksInStorage } from '../../utils'
+import { TasksService } from '../../services/tasks.service';
+
 
 @Component({
   selector: 'app-list',
@@ -13,10 +15,15 @@ export class ListComponent implements OnInit {
 
   private _tasks: Task[] = []
 
-  constructor(private _router: Router) { }
+  constructor(
+    private _router: Router,
+    private _tasksService: TasksService
+  ) { }
 
   ngOnInit(): void {
-    this._tasks = getTasksInStorage()
+    this._tasksService
+      .getTasks()
+      .subscribe((tasks) => this._tasks = tasks);
   }
 
   handleChangeStatus(task: Task) {
@@ -36,6 +43,46 @@ export class ListComponent implements OnInit {
 
   handleUpdate(task: Task) {
     this._router.navigate([PATH_NAMES.TASKS_UPDATE, task.id])
+  }
+
+  async handleCreateEvent(task: Task) {
+    const eventDetails = {
+      summary: task.description,
+      description: task.details,
+      start: {
+        dateTime: task.dateStart,
+      },
+      end: {
+        dateTime: task.dateEnd,
+      },
+    };
+
+    try {
+      const response = await fetch('http://127.0.0.1:3001/event', {
+        method: 'POST',
+        body: JSON.stringify(eventDetails),
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Access-Control-Allow-Origin': '*',
+        }
+      });
+
+      const res = await response.json();
+      if (res?.data?.data?.htmlLink) {
+        task.htmlLink = res.data.data.htmlLink
+        updateTasksInStorage(task)
+        alert('EVENTO CALENDARIZADO CON EXITO')
+      }
+
+    } catch (error) {
+      console.log('catch', error)
+      alert('ERROR AL CALENDARIZAR EVENTO')
+    }
+
+  }
+
+  handleShowEvent(task: Task) {
+    window.open(task.htmlLink)
   }
 
   get tasks() {

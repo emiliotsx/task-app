@@ -20,9 +20,11 @@ export const updateTasksInStorage = (task: Task) => {
 
   tasks[updatedTask]['description'] = task.description
   tasks[updatedTask]['details'] = task.details
-  tasks[updatedTask]['date'] = task.date
+  tasks[updatedTask]['dateStart'] = task.dateStart
+  tasks[updatedTask]['dateEnd'] = task.dateEnd
   tasks[updatedTask]['status'] = task.status
   tasks[updatedTask]['category'] = task.category
+  tasks[updatedTask]['htmlLink'] = task.htmlLink ?? ''
 
   localStorage.setItem(ID_LOCAL_STORAGE.TASKS, JSON.stringify(tasks))
 }
@@ -40,13 +42,21 @@ export const formatInputDate = (dateValue: string) => {
   const year = date?.getFullYear()
   const month = (date?.getMonth() as number) + 1
   const day = date?.getDate()
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  const seconds = date.getSeconds();
 
-  const monthDate = (month >= 10) ? month : `0${month}`
-  const dayDate = (day >= 10) ? day : `0${day}`
+  const monthDate = validateIfZeroAddedAtTheBeginning(month)
+  const dayDate = validateIfZeroAddedAtTheBeginning(day)
+  const hoursDate = validateIfZeroAddedAtTheBeginning(hours)
+  const minutesDate = validateIfZeroAddedAtTheBeginning(minutes)
+  const secondsDate = validateIfZeroAddedAtTheBeginning(seconds)
 
-  return `${year}-${monthDate}-${dayDate}`
+  return `${year}-${monthDate}-${dayDate}T${hoursDate}:${minutesDate}:${secondsDate}`
 
 }
+
+const validateIfZeroAddedAtTheBeginning = (value: number) => (value >= 10) ? value : `0${value}`
 
 export const getCategoriesInStorage = (): Category[] => {
   const categories = (localStorage.getItem(ID_LOCAL_STORAGE.CATEGORIES) ?? []) as string

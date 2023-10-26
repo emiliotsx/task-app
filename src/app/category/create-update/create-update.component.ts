@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { PATH_NAMES } from '../../constants'
 import { getCategoriesInStorage, createCategoriesInStorage, updateCategoriesInStorage } from '../../utils'
+import { CategoriesService } from '../../services/categories.service';
 
 
 @Component({
@@ -21,28 +22,27 @@ export class CreateUpdateComponent implements OnInit {
 
   constructor(
     private _router: Router,
-    private _activeRoute: ActivatedRoute
+    private _activeRoute: ActivatedRoute,
+    private _categoriesService: CategoriesService
   ) { }
 
   ngOnInit(): void {
-    this.fillCategory()
+    const id = this._activeRoute.snapshot.paramMap.get('id')
+    if (!!id) {
+      this._categoriesService
+        .getCategoryById(+id)
+        .subscribe((category) => this.fillCategory(category));
+    }
   }
 
-  fillCategory() {
-    const id = this._activeRoute.snapshot.paramMap.get('id')
+  fillCategory(category: Category) {
+    if (!category) return
 
-    if (!id) return
-
-    this._id = +id
-    const categories = getCategoriesInStorage();
-    const category = categories.find((category: Category) => category.id === +id)
-
-    if (category) {
-      this._form.patchValue({
-        id: category.id,
-        description: category.description,
-      })
-    }
+    this._id = category.id
+    this._form.patchValue({
+      id: category.id,
+      description: category.description,
+    })
   }
 
   async create() {
@@ -52,11 +52,22 @@ export class CreateUpdateComponent implements OnInit {
       description: description!
     }
 
-    !this.id
-      ? createCategoriesInStorage(category)
-      : updateCategoriesInStorage(category)
+    if (!this.id) {
+      this._categoriesService
+        .insertCategory(category)
+        .subscribe(() => this.redirectPage())
+    } else {
+      this._categoriesService
+        .updateCategory(category)
+        .subscribe(() => this.redirectPage())
+    }
+  }
 
+  redirectPage() {
     this._router.navigate([PATH_NAMES.TASKS])
+      .then(() => {
+        window.location.reload()
+      })
   }
 
   get form() {
